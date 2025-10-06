@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Aventura Gráfica</title>
+
+  <!-- Tipografías Cinzel Decorative y Merriweather -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700;900&family=Merriweather:wght@300;400;700;900&display=swap" rel="stylesheet">
+
+  <style>
+    :root{
+      --celeste: #000000; /* celeste brillante */
+      --celeste-strong: #4e4e4e;
+      --negro: #000;
+      --blanco: #fff;
+    }
+
+    body {
+      margin: 0;
+      background-image: url('img/FONDO.png');
+      background-size: cover;
+      background-repeat: no-repeat;
+      background-position: center;
+      font-family: "Cinzel Decorative", serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+    }
+
+    h1 {
+      margin-top: 20px;
+      margin-bottom: 5px;
+      font-size: 2.5em;
+      color: white;
+      text-align: center;
+      letter-spacing: 2px;
+    }
+
+    h2 {
+      margin-top: 0;
+      margin-bottom: 20px;
+      font-size: 1.3em;
+      color: white;
+      text-align: center;
+      font-weight: 400;
+    }
+
+    #contenedor {
+      position: relative;
+      aspect-ratio: 1 / 1;
+      width: 100vw;
+      max-width: 600px;
+      border: 30px solid black;
+      background-color: #000000;
+      overflow: hidden;
+      display: grid;
+      grid-template-rows: 1fr auto auto;
+    }
+
+    #escena {
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      opacity: 0;
+      transition: opacity 0.8s ease-in-out;
+      cursor: default;
+    }
+    #escena.clickable { cursor: pointer; }
+
+    #cajaTexto {
+      background: rgba(0, 0, 0, 0.95);
+      border-top: 2px solid var(--celeste);
+      padding: 15px;
+      text-align: center;
+      font-size: 1rem;
+      min-height: 100px;
+      font-family: "Merriweather", serif;
+      line-height: 1.6;
+      color: var(--blanco);
+      text-shadow: 0 0 4px rgba(0,0,0,0.6);
+    }
+
+    .maquina span {
+      border-right: 2px solid var(--blanco);
+      display: inline;
+      animation: blink 0.8s infinite;
+    }
+    @keyframes blink { 50% { border-color: transparent; } }
+
+    .botones {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 10px 15px;
+      background: rgba(0, 0, 0, 0.9);
+      border-top: 2px solid black;
+    }
+
+    .btn {
+      flex: 1;
+      padding: 10px;
+      font-size: 1rem;
+      border: 2px solid black;
+      background: white;
+      cursor: pointer;
+      transition: all 0.25s ease, box-shadow 0.25s ease;
+      font-family: "Cinzel Decorative", serif;
+      text-transform: none;
+    }
+
+    @keyframes pulseGlow {
+      0%, 100% { box-shadow: 0 0 6px rgba(0,229,255,0.6), 0 0 14px rgba(0,229,255,0.35); }
+      50%      { box-shadow: 0 0 10px rgba(24,240,255,0.9), 0 0 22px rgba(24,240,255,0.6); }
+    }
+    .glow { animation: pulseGlow 1.6s ease-in-out infinite; }
+
+    .btn-mas {
+      background: rgba(0,0,0,0.85);
+      color: var(--blanco);
+      border-color: var(--celeste);
+      box-shadow: 0 0 6px rgba(0, 229, 255, 0.6), 0 0 14px rgba(0, 229, 255, 0.4);
+    }
+    .btn-mas.glow { animation: pulseGlow 1.6s ease-in-out infinite; }
+    .btn-mas:hover {
+      background: var(--celeste);
+      color: #001318;
+      border-color: var(--celeste-strong);
+      box-shadow: 0 0 10px rgba(24,240,255,0.95), 0 0 24px rgba(24,240,255,0.8), inset 0 0 12px rgba(255,255,255,0.35);
+      transform: translateY(-1px);
+    }
+    .btn-mas:active { transform: translateY(0) scale(0.98); }
+
+    .no-glow { animation: none !important; box-shadow: none !important; }
+
+    .btn-continuar {
+      background: var(--negro);
+      color: var(--blanco);
+      border-color: var(--blanco);
+    }
+    .btn-continuar.glow {
+      border-color: var(--celeste);
+      box-shadow: 0 0 6px rgba(0,229,255,0.6), 0 0 14px rgba(0,229,255,0.4);
+      animation: pulseGlow 1.6s ease-in-out infinite;
+    }
+    .btn-continuar:hover {
+      background: var(--celeste);
+      color: #001318;
+      border-color: var(--celeste);
+      box-shadow: 0 0 8px rgba(0,229,255,0.8), 0 0 18px rgba(0,229,255,0.55);
+      transform: translateY(-1px);
+    }
+
+    @media (max-width: 500px) {
+      #cajaTexto { font-size: 0.92rem; }
+      .btn { font-size: 0.92rem; padding: 9px; }
+    }
+
+    /* Oculta el <audio> visualmente sin quitarlo del DOM (necesario en iOS). */
+    .visually-hidden {
+      position: absolute !important;
+      left: -9999px !important;
+      width: 1px; height: 1px; overflow: hidden;
+    }
+  </style>
+</head>
+
+<body>
+  <h1>Mortalis</h1>
+  <h2>La historia de Selen</h2>
+
+  <!-- AUDIO DE FONDO: se inicia con el primer movimiento/click/toque -->
+  <audio id="bgAudio" class="visually-hidden" src="Sonidos/Sonido1.mp3" preload="auto" loop></audio>
+
+  <div id="contenedor">
+    <div id="escena"></div>
+    <div id="cajaTexto"></div>
+    <div class="botones" id="botonera"></div>
+  </div>
+
+  <script>
+    // ------- AUDIO DE FONDO (se desbloquea con interacción) -------
+    const bgAudio = document.getElementById('bgAudio');
+    bgAudio.volume = 0.35; // volumen inicial suave
+
+    let audioDesbloqueado = false;
+    async function iniciarAudio() {
+      if (audioDesbloqueado) return;
+      try {
+        // Algunos navegadores necesitan que el audio esté al menos "play()" una vez dentro del gesto
+        await bgAudio.play();
+        audioDesbloqueado = true;
+
+        // Quita los listeners para evitar llamadas extra
+        window.removeEventListener('pointermove', iniciarAudio);
+        window.removeEventListener('click', iniciarAudio);
+        window.removeEventListener('touchstart', iniciarAudio);
+
+        // (Opcional) pequeño fade-in
+        let v = 0.0;
+        bgAudio.volume = v;
+        const fade = setInterval(() => {
+          v += 0.05;
+          bgAudio.volume = Math.min(v, 0.35);
+          if (v >= 0.35) clearInterval(fade);
+        }, 80);
+      } catch (e) {
+        // Si falla (p. ej., bloqueo de autoplay), lo intentaremos en el próximo gesto
+        audioDesbloqueado = false;
+      }
+    }
+    window.addEventListener('pointermove', iniciarAudio, { passive: true });
+    window.addEventListener('click', iniciarAudio, { passive: true });
+    window.addEventListener('touchstart', iniciarAudio, { passive: true });
+
+    // Pausa/reanuda si cambia la visibilidad (ahorra batería en móviles)
+    document.addEventListener('visibilitychange', () => {
+      if (!audioDesbloqueado) return;
+      if (document.hidden) bgAudio.pause();
+      else bgAudio.play().catch(()=>{});
+    });
+
+    // ------- TU LÓGICA DEL JUEGO / HISTORIA -------
+    const pantallas = [
+      { texto: "Bienvenido a esta aventura", mas: "Vas a conocer la historia de Selen Aru" },
+      { texto: "Las IA ayudaron mucho a las personas pero también debilitaron física y emocionalmente a las personas, poco a poco fueron aislándose cada vez mas...", mas: "Su uso excesivo promovió también la automedicación, y las personas se volvieron resistentes a los medicamentos por eso se aislaron por miedo a enfermarse y no conseguir una cura." },
+      { texto: "Convencida de que la medicina natural es la solución decide salir y comenzar a cultivar y cosechar sus propias plantas para obtener medicina y alimentos", mas: "Ella lo hacia para sus seres queridos que fueron afectados por el abuso de medicamentos, pero en el fondo ella quería ayudar a todos tener símbolos tallados." },
+      { texto: "Selen decide salir con una mochila llena de semillas a plantar por todas partes y a animar a las personas a cuidarlas entre todos.", mas: "les entregaba frascos con hiervas curativas a las personas a cambio de plantar en el frente de las casas, aunque un poco dudosas deciden que ayudarla ya que era una persona muy querida en el pueblo." },
+      { texto: "Pasaron años en los que Selen acostumbraba a ir a las plazas a cuidar las plantas, enseñar lo que sabe y compartir una merienda con las personas", mas: "Un día se reúne todo el pueblo a su alrededor a festejar  y agradecerle por como los ayudo a cambiar y salir del aislamiento." },
+      { texto: "Ella era una anciana muy sabia y comenzo a escribir un libro en el que dejaria todo su concoimiento para que las personas puedan difundirlo y ayudar a mucha gente", mas: "Lamentablemente Selen era muy mayor y fallecio al poco tiempo de terminar su libro, no fue vivido como una pérdida común. La comunidad entendió que, al morir, su energía no desaparecería sino que de alguna forma permanecería" },
+      { texto: "El pueblo decide reunirse en el arbol central, y llevar con ellos el cristal que identificaba a cada familia", mas: "Al llegar el atardecer todas las familias se acercaron al arbol donde descansaba el cuerpo de Selen." },
+      { texto: "Cada familia elegio a una persona que colocaría el cristal en el arbol", mas: "Al unir todos los cristales el lugar se inundo de luz y alegría y las personas comenzaron a experimentar recuerdos y sentimientos con la energía de Selen" },
+      { texto: "Todos los años se celebra y recuerda su legado, su energía, al condensarse en el Cristal Mayor de Memoria, no desaparece sino que se convierte en un faro para las futuras generaciones asegurando que su memoria no se pierda.", mas: "Click en el cristal para conocer mas." }
+    ];
+
+    let indice = 0;
+    let mostrandoMas = false;
+
+    const escena = document.getElementById("escena");
+    const cajaTexto = document.getElementById("cajaTexto");
+    const botonera = document.getElementById("botonera");
+
+    function escribirTexto(texto, done) {
+      cajaTexto.innerHTML = '<div class="maquina"></div>';
+      const box = cajaTexto.querySelector('.maquina');
+      let i = 0;
+      (function step() {
+        if (i < texto.length) {
+          box.textContent = texto.slice(0, i + 1);
+          box.innerHTML = box.textContent + "<span></span>";
+          i++;
+          setTimeout(step, 30);
+        } else {
+          box.innerHTML = box.textContent;
+          if (done) done();
+        }
+      })();
+    }
+
+    function actualizarFondo() {
+      const n = indice + 1;
+      escena.style.opacity = 0;
+      setTimeout(() => {
+        escena.style.backgroundImage = `url('img/Pantalla${n}.png')`;
+        escena.style.opacity = 1;
+        if (n === 9) {
+          escena.classList.add("clickable");
+          escena.onclick = () => {
+            window.open("https://www.instagram.com/elowen_selen/?utm_source=ig_web_button_share_sheet", "_blank");
+          };
+        } else {
+          escena.classList.remove("clickable");
+          escena.onclick = null;
+        }
+      }, 300);
+    }
+
+    function renderBotones(final) {
+      botonera.innerHTML = final
+        ? `<button class="btn btn-continuar" id="btnContinuar" onclick="reiniciar()">Reiniciar</button>`
+        : `<button class="btn btn-mas glow" id="btnMas" onclick="conocerMas()">Conocer más</button>
+           <button class="btn btn-continuar" id="btnContinuar" onclick="continuar()">Continuar</button>`;
+    }
+
+    function mostrarPantalla() {
+      const p = pantallas[indice];
+      mostrandoMas = false;
+      actualizarFondo();
+      escribirTexto(p.texto);
+      renderBotones(!!p.final);
+    }
+
+    function conocerMas() {
+      const p = pantallas[indice];
+      if (!mostrandoMas && p.mas) {
+        mostrandoMas = true;
+        escribirTexto(p.mas);
+        const btnMas = document.getElementById('btnMas');
+        const btnContinuar = document.getElementById('btnContinuar');
+        if (btnMas) {
+          btnMas.classList.add('no-glow');
+          btnMas.classList.remove('glow');
+        }
+        if (btnContinuar) {
+          btnContinuar.classList.add('glow');
+        }
+      }
+    }
+
+    function continuar() {
+      if (indice < pantallas.length - 1) {
+        indice++;
+        mostrarPantalla();
+      }
+    }
+
+    function reiniciar() {
+      indice = 0;
+      mostrarPantalla();
+    }
+
+    // Iniciar
+    mostrarPantalla();
+  </script>
+</body>
+</html>
