@@ -31,7 +31,7 @@
 
     body {
       margin: 0;
-      background-image: url('img/FONDO.webp');
+      background-image: url('img/FONDO.png');
       background-size: cover;
       background-repeat: no-repeat;
       background-position: center;
@@ -259,7 +259,7 @@
       const n = indice + 1;
       escena.style.opacity = 0;
       setTimeout(() => {
-        escena.style.backgroundImage = `url('img/Pantalla${n}.webp')`;
+        escena.style.backgroundImage = `url('img/Pantalla${n}.png')`;
         escena.style.opacity = 1;
         if (n === 9) {
           escena.classList.add("clickable");
@@ -303,5 +303,6 @@
   </script>
 </body>
 </html>
+
 
 
